@@ -1,0 +1,316 @@
+<!DOCTYPE html><html>
+<head>
+  <title>DM ME SIMULATOR (INTROVERT EDITION)</title>
+  <style>
+    :root {
+      --bg-color: #1a1a1a;
+      --user-bubble: #616569;
+      --me-bubble: #333333;
+      --text-color: white;
+      --system-color: #888;
+    }body.twink-mode {
+  --bg-color: #ffe6f0;
+  --user-bubble: #ffb3d9;
+  --me-bubble: #ffffff;
+  --text-color: #333333;
+  --system-color: #999;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: Comic Sans MS, sans-serif;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.topbar {
+  background-color: rgba(0,0,0,0.2);
+  color: var(--text-color);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: var(--bg-color);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.dropdown-content button {
+  width: 100%;
+  background: none;
+  color: var(--text-color);
+  border: none;
+  padding: 12px 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-content button:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.chat-container {
+  flex: 1;
+  padding: 10px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  margin: 6px 10px;
+  border-radius: 20px;
+  line-height: 1.4em;
+  word-break: break-word;
+}
+
+.user {
+  align-self: flex-end;
+  background-color: var(--user-bubble);
+  color: white;
+  border-bottom-right-radius: 0;
+}
+
+.me {
+  align-self: flex-start;
+  background-color: var(--me-bubble);
+  color: var(--text-color);
+  border-bottom-left-radius: 0;
+}
+
+.system {
+  text-align: center;
+  font-style: italic;
+  font-size: 0.9em;
+  color: var(--system-color);
+  margin: 10px 0;
+}
+
+.option-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn {
+  background-color: var(--user-bubble);
+  color: white;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background-color: #ff3399;
+  box-shadow: 0 0 10px hotpink;
+}
+
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    Areesteed
+    <div class="dropdown">
+      <span style="cursor:pointer">⋮</span>
+      <div class="dropdown-content">
+        <button onclick="setMode(false)">Emo Mode</button>
+        <button onclick="setMode(true)">Twink Mode</button>
+      </div>
+    </div>
+  </div>  <div class="chat-container" id="chat"></div>
+  <div class="option-container" id="options"></div>  <script>
+    const chat = document.getElementById('chat');
+    const options = document.getElementById('options');
+
+    const steps = {
+      start: {
+        you: "[types 'hi'... deletes... types 'hey'... questioning your life choice]",
+        me: [
+          '[online out of nowhere]',
+          '... Hey?',
+          'Do you test your school drama script in my DM or something?',
+          'you tryna send me hi or smtn’?'
+        ],
+        buttons: [
+          { text: 'Say hi', next: 'hi' },
+          { text: 'Close app. Questioning your life choice again', next: 'ghost' },
+          { text: 'Send taro image', next: 'meme' }
+        ]
+      },
+      hi: {
+        you: 'hi',
+        me: [
+          'ey, what can I do for you?',
+          'sup',
+          'HI HI!',
+          '[send clueless dumbass sticker]'
+        ],
+        buttons: [
+          { text: 'Ask for commission', next: 'commission' },
+          { text: 'Ghost me', next: 'ghost' }
+        ]
+      },
+      commission: {
+        you: 'commission',
+        me: [
+          'ok. Send details or— question?',
+          'was that supposed to mean you want commission or smtn?? okay.',
+          'okay, commission.',
+          'commission.'
+        ],
+        buttons: [
+          { text: 'Send detail or question', next: 'detail' }
+        ]
+      },
+      detail: {
+        me: [
+          'OHH MY (wallet) SAVIOR!! THANKYOU FOR COMMISSION ME!!',
+          'Send refs bro— well i can do design too, cost more.',
+          'OH I CAN FINALLY BUY MY PRECIOUS TARO DRINK!! and feed my cat.',
+          'Sweet. I will now draw with tears (of joy).'
+        ],
+        buttons: [
+          { text: "send 3 blurry image (or maybe just upload the HD one if you don't want mw to ask likw crazy)", next: 'image' }
+        ]
+      },
+      image: {
+        me: [
+          'Got it— I’ll work on it right away after payment confirmation.',
+          'Saved. I’ll turn this into absolute chaos.',
+          'Let me manifest this into something masterpiece.',
+          'Alright.'
+        ],
+        buttons: [
+          { text: 'send thumb up emoji', next: 'congrats' }
+        ]
+      },
+      congrats: {
+        you: '👍',
+        system: [
+          '🎉 CONGRATULATIONS! You just... actually asked for art commission! now could you ask me fr?',
+          'Social Anxiety: 0 | You: 1',
+          'ME: Now go show off thay commission art! and maybe actually DM me?'
+        ],
+        buttons: [
+          { text: '.. wait it’s not over yet? why is there still a button?', next: 'badge' }
+        ]
+      },
+      badge: {
+        you: 'tnx',
+        me: ['now will you DM me fr?'],
+        system: ['🏅 Here’s your First Try Badge: "IDK WHAT TO PUT HERE #1"'],
+        buttons: [
+          { text: 'Restart', next: 'start' }
+        ]
+      },
+      ghost: {
+        system: [
+          'You missed:',
+          '- A masterpiece start from $5.',
+          "- Free therapy (I'm not licensed, but trust me anyway— wilo you?).",
+          '- A masterpiece #2'
+        ],
+        buttons: [
+          { text: 'Try again? If you curious what happen on another timeline', next: 'start' }
+        ]
+      },
+      meme: {
+        you: '[sends taro image]',
+        me: [
+          'Is this your way to propose? I accept',
+          'Yes. I will',
+          'Oh you blessed my eyes..',
+          '/blushed like an anime girl'
+        ],
+        buttons: [
+          { text: 'Thankyou stranger.. -from Areesteed', next: 'start' }
+        ]
+      }
+    };
+
+    function appendBubble(text, sender = 'me') {
+      const bubble = document.createElement('div');
+      bubble.className = sender === 'system' ? 'system' : `bubble ${sender}`;
+      bubble.innerText = text;
+      chat.appendChild(bubble);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function showOptions(buttons) {
+      options.innerHTML = '';
+      buttons.forEach(btn => {
+        const button = document.createElement('button');
+        button.className = 'btn';
+        button.innerText = btn.text;
+        button.onclick = () => nextStep(btn.next);
+        options.appendChild(button);
+      });
+    }
+
+    function nextStep(id) {
+      const step = steps[id];
+      showOptions([]);
+      if (step.you) appendBubble(step.you, 'user');
+      if (step.system) {
+        step.system.forEach(txt => appendBubble(txt, 'system'));
+      }
+      if (step.me) {
+        const delay = 500 + Math.random() * 700;
+        const typing = document.createElement('div');
+        typing.className = 'bubble me';
+        typing.innerText = 'typing...';
+        chat.appendChild(typing);
+        chat.scrollTop = chat.scrollHeight;
+        setTimeout(() => {
+          typing.remove();
+          appendBubble(random(step.me), 'me');
+          showOptions(step.buttons || []);
+        }, delay);
+      } else {
+        showOptions(step.buttons || []);
+      }
+    }
+
+    function random(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function setMode(twink) {
+      document.body.classList.toggle('twink-mode', twink);
+    }
+
+    // Start chat
+    nextStep('start');
+  </script></body>
+</html>
